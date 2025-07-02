@@ -354,5 +354,16 @@ git init -> inicializa um projeto.
 git status -> mostra o status de publicação e não publicação de seus
 arquivos.
 
+git add . -> adiciona todos os arquivos para envio ao github.
+
+git commit -m -> publica no controlador de versão.
+
+Caso seja a primeira vez à executar os comandos git em uma determinada máquina
+configure seu usuário para fazer os envios, precisará fornecer email e nome de
+usuário.
+
+git config --global user.email "brendosnip38.a@gmail.com"
+git config --global user.name "Brendo Saraiva"
+
 
 
