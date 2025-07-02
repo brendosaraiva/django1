@@ -365,5 +365,25 @@ usuário.
 git config --global user.email "brendosnip38.a@gmail.com"
 git config --global user.name "Brendo Saraiva"
 
+Heroku -> Para publicar sua aplicação de forma gratuita, você
+tem que criar uma conta, acesse: www.heroku.com
+
+
+https://devcenter.heroku.com/articles/getting-started-with-python#set-up
+
+configuração para quem trabalha com python
+
+
+runtime.txt crie na raiz do projeto e coloque a versão do python dentro do
+arquivo. Python-3.11.1 -> Não se esqueça o traço.
+
+pip freeze requirements.txt -> Instala as bibliotecas do projeto dentro de
+requirements.txt.
+
+Crie outro arquivo do tipo text, com o nome de Procfile, arquivo de configuração do Heroku.
+web: gunicorn django1.wsgi --log-file -
+
+Isso servirá para executar o gunicorn, através do contato do projeto com wsgi, que no
+caso o projeto é o django1.
 
 
