@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">  <!-- puxa o arquivo de estilos da pasta static -->
+</head>
+<body>
+    <h1>Produto</h1>
+    <table>
+        <thead>
+        <tr> <!-- <tr></tr> -> table reader, lê as informações da tabela por linha -->
+            <th>Produto</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+        </tr>
+        </thead>
+        <tbody>  <!-- <tbody></>tbody> ->é o corpo da tabela -->
+        <tr>
+            <!-- <td></td> é o dado que vai em cada célula por linha -->
+            <td><a href="{% url 'index' %}">{{produto.nome}}</a></td>
+            <td>{{produto.preco}}</td>
+            <td>{{produto.estoque}}</td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

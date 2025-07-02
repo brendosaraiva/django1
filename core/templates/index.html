@@ -1,0 +1,43 @@
+{% load static %}  <!-- Carrega arquivos estáticos -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Django 1 - Index</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">  <!-- puxa o arquivo de estilos da pasta static -->
+</head>
+<body>
+    <center>
+    <h1>Index</h1>
+    <!--Para acessar o valor de uma variável do tipo dicionário contida na view index,
+    coloca-se chaves duplas (de abrir e fechar) e a chave para acessar o valor do
+    dicionário.
+    -->
+    <img src="{% static 'images/django.png' %}"/>
+    <h2>{{curso}}</h2>
+    <p>{{outro}}</p>
+    <!--Dá para imprimir os valores de um loop dentro de um template, utilizando
+    o sinal de porcental no início e fim, entre chaves.
+    -->
+    <table>
+        <thead>
+            <tr> <!-- <tr></tr> -> table reader, lê as informações da tabela por linha -->
+                <th>Produto</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody>  <!-- <tbody></>tbody> ->é o corpo da tabela -->
+            {% for produto in produtos %}
+            <tr>
+                <!-- <td></td> é o dado que vai em cada célula por linha -->
+                <td><a href="{% url 'produto' produto.id %}">{{produto.nome}}</a></td>
+                <td>{{produto.preco}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button onclick="teste();">Clique-me</button>
+    </center>
+    <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

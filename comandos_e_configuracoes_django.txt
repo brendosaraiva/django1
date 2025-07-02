@@ -1,0 +1,358 @@
+pip freeze > requirements.txt
+
+Toda vez ao desenvolver um projeto e fazer utilização de bibliotecas, ao
+terminar de instalá-las e subir para algum Gerenciador de Versionamento de
+código, ou para qualquer outro lugar, é ideal que se crie um arquivo para
+guardar informações das bibliotecas utilizadas nesse projeto, portanto, o
+comando acima realizado pelo pip irá pegar todas as bibliotecas utilizadas
+no projeto e salvará num arquivo requeriments.txt.
+
+Isso é útil para saber as versões utilizadas em cada uma das bibliotecas
+e evitar atualizações novas, que podem mudar algum comportamento no código,
+pondo em risco a integridade do seu sistema.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+django-admin startproject django1 .
+
+O comando acima cria um diretório na raiz do projeto com arquivos dentro e
+um arquivo manage.py na raiz, exemplo abaixo:
+
+diretorio_raiz
+|__django1
+|  |__arquivos
+|__manage.py
+
+OBS: não se esqueça do ponto no final ao criar o diretório que ficará na
+raiz do projeto, pois se colocar somente "django-admin startproject django1"
+irá criar um subdiretório dentro deste ao ser criado, exemplo:
+
+diretorio_raiz
+|__django1
+   |__django1
+   |  |__arquivos
+   |__manage.py
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+manage.py
+
+É o arquivo utilizado para fazer o gerenciamento dos programas via terminal.
+Só irá funcionar os comandos via terminal, se este arquivo estiver presente
+pois ele é uma peça fundamental da aplicação django.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+> CRIANDO APLICAÇÃO DJANGO >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+django-admin startapp core
+
+django-admin startapp -> cria uma pasta destinada a aplicação, base para
+uso e manipulação inicial do projeto.
+
+core -> recebe esse nome referente a núcleo, iniciação de um projeto que
+não se tem ideia de como será, porém, sabe-se que inicialmente será desen-
+volvido através dele.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+pacote migration -> é um pacote de migração e atualização das aplicações do
+banco de dados, desde a criação a atualizações são armazenadas nele. Forma
+profissional de manter histórico de bancos de dados.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+admin.py -> É um arquivo de administração de modelos no Django, pois este
+framework já traz uma aplicação de administração. Além do mais, o
+configuramos para receber as nossas aplicações feitas no Django.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+views.py -> Tem funções que serão chamadas nas rotas para abrir os templates
+para visualização.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+arquivo settings.py
+
+INSTALLED_APPS = ["elementos"] -> Toda vez que criar uma nova aplicação
+dentro da pasta, você tem que colocar o nome da pasta dentro dessa lista.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+OBS: toda vez que baixar um template, passe o nome da pasta para a chave
+DIRS, se o modelo tiver um nome, acrescente-o nesta chave. Exemplo: uma
+pasta chamada "templates":
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": ["templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                           settings.py                             >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+python manage.py runserver -> "runserver" é um comando passado como
+argumento na linha de comando (sys.argv) e interpretado pela função
+execute_from_command_line() do Django, que mapeia esse comando para
+a execução do servidor de desenvolvimento embutido.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+OBS: DJANGO olha as alterações feitas em seus arquivos Django ou Python
+e atualiza.
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+✅ O que DEBUG = False realmente faz:
+Esconde erros detalhados na tela:
+
+Se houver um erro no código, o Django não mostra o traceback completo
+(aquela tela com detalhes da exceção).
+
+Ele exibe apenas uma página de erro genérica (como erro 500).
+
+Isso protege informações sensíveis (rotas, variáveis, banco de dados,
+etc.) de serem expostas ao usuário.
+
+Exige que ALLOWED_HOSTS seja corretamente configurado:
+
+Com DEBUG = False, o Django não aceita qualquer host na requisição a
+menos que esteja listado no ALLOWED_HOSTS. Exemplo:
+
+DEBUG = False
+ALLOWED_HOSTS = ["meusite.com","www.meusite.com", "localhost", "127.0.0.1"]
+
+Isso evita ataques via cabeçalho Host.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Mude o idioma da página web de inglês para brasileiro
+LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "pt-br"
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                             views.py                              >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+views.py -> é o único arquivo que utilizamos para fazer as visualizações
+do sistema na pasta core, ela será responsável pela execução das
+visualizações das nossas aplicações.
+
+É nela que programamos para que o MVC do Django funcione.
+
+Uma view no django, nada mais é do que uma função,
+função que recebe uma variável (request) de requisição para
+acessar determinada página web.
+
+render -> renderiza uma página html, ou seja, carrega.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                              urls.py                              >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+As rotas são de responsabilidade do arquivo urls.py
+
+Server Error (500) -> Erro de tentar processar algo e não conseguir
+
+from django.contrib import admin
+from django.urls import path
+
+# importando views de index e contato para definir rotas
+from core.views import index, contato
+
+# path -> define as rotas de visualizações das páginas web. Recebe dois argumentos
+# posicionais, o nome da página e a view.
+
+# "" -> quando passado o atributo com string vazia para path, significa que
+# está definindo uma view para a página inicial/raiz do sistema.
+
+# index é a página principal, a página inicial que é a raiz.
+
+# caminhos de url
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", index),
+    path("contato", contato)
+]
+
+OBS: essa acima não é a ideal de se fazer no projeto django.
+O ideal é que seja criado um arquivo urls.py na aplicação core
+e toda rota que fizermos das páginas web sejam definidas na nova,
+pois a rota padrão pode-se ser utilizada para rotas administrativas
+do projeto.
+
+-------------------
+| django1/urls.py |
+-------------------
+
+from django.contrib import admin
+from django.urls import path, include
+
+# path("", include("core.urls")) -> Toda requisição feita para
+# raiz é enviada (include) para aplicação core, que tem o arquivo
+# urls que irá receber essas requisições.
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("core.urls")),
+]
+
+----------------
+| core/urls.py |
+----------------
+
+from django.urls import path
+
+from .views import index, contato
+
+urlpatterns = [
+    path("", index),
+    path("contato", contato)
+]
+
+OBS: o ideal de se fazer isso é para evitar um monte de rotas na url
+padrão, nela colocamos a rota GERAL das aplicações. E cada aplicação
+que for criada para o projeto é ideal que tenha sua própria url.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                            Templates                              >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Inserir arquivos de rotas das views dentro da pasta de templates
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                              Models                               >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Arquivo utilizado para persistir os dados que são recebidos com as
+interações de sua aplicação com o banco de dados. Local onde é feito
+o mapeamento.
+
+Verifique se o pacote referente a aplicação está dentro de settings
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "core",
+]
+
+Pois se não os testes de models.py não irão funcionar!
+
+
+1º Passo - python manage.py makemigrations:
+
+Este comando verifica se houve alterações nos modelos definidos em models.py.
+Se houver alterações, ele cria arquivos de migração na pasta migrations, mas
+não "pega" todos os arquivos da aplicação. Ele apenas captura as mudanças
+nos modelos.
+
+2º Passo - python manage.py migrate:
+
+Este comando aplica as migrações que foram criadas anteriormente. Ele atualiza
+o banco de dados de acordo com as definições dos modelos.
+Ele não faz "checagem" de arquivos da aplicação, mas sim aplica as mudanças que
+já foram documentadas nos arquivos de migração. O selo de "OK" refere-se a que
+a migração foi bem-sucedida, aplicando as mudanças ao banco de dados.
+
+1º O makemigrations captura as alterações nos modelos e cria arquivos de migração.
+2º O migrate aplica essas migrações no banco de dados.
+
+O fluxo dos comandos makemigrations e migrate no Django é voltado principalmente
+para a estrutura de como os dados são persistidos e regulam a lógica do sistema
+na comunicação com o banco de dados no back-end.
+
+Estrutura de Dados: O comando makemigrations captura as alterações feitas nos
+modelos de dados, que representam a estrutura dos dados que você vai manipular.
+Isso inclui adições, modificações e remoções nos campos dos modelos.
+
+Persistência de Dados: O comando migrate aplica essas migrações ao banco de
+dados, garantindo que a estrutura do banco de dados corresponda aos modelos
+definidos. Ele permite que você atualize a estrutura sem perder os dados
+existentes, mantendo toda a informação já inserida.
+
+Esteja Atento: Quando você realiza operações de CRUD, a lógica do seu sistema
+continua a funcionar normalmente. Adicionando novas funcionalidades e
+atualizações nos modelos, você só precisa executar makemigrations e migrate para
+adaptar a estrutura do banco.
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                              admin                                >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+python manage.py createsuperuser -> Cria um Superusuário e senha para
+adiministrar a aplicação web. Primeiro usuário criado para administrar
+o sistema
+
+As configurações do modelo são feitas em admin no core, nele importamos
+os nossos modelos e registrá-los na administração.
+
+Por segurança, na rota urls do pacote django1, renomeie a rota de admin
+para outro nome, pois isso é extremamente útil para defender e proteger
+o seu sistema de possíveis ataques web na área administrativa. Renomeie
+para outro nome.
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                        Django Shell                               >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+python manage.py help -> Mostra os comandos de execução que são utilizados
+pelo arquivo manage.py e além de ter uma documentação via comando help
+que explica o que cada comando do arquivo faz em um projeto e suas
+opções, exemplo:
+
+python manage.py shell -> comando para abrir terminal, é ótimo para
+testar os comandos e conhecer mais dos comandos de cada função ou método
+dos arquivos que vêm juntamente com o pacote django.
+
+<WSGIRequest: GET '/'> -> WSGI é o padrão de aplicações Python para a web.
+
+request -> Dá para ver no Django Shell, atividades de superusuários e demais
+administradores da aplicação.
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                          Publicando                               >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+pip install whitenoise gunicorn
+
+whitenoise -> mostra arquivos estáticos já que o django não consegue
+apresentar arquivos estáticos durante a produção.
+
+gunicorn -> servidor específico para rodar a aplicação em produção
+
+settings.py -> No arquivo, onde está a lista MIDDLEWARE, ponha como
+segundo elemento "whitenoise.middleware.WhiteNoiseMiddleware" pois irá
+servir os arquivos estáticos.
+
+.gitignore -> Serve para impedir de mostrar alguns arquivos que não
+queremos publicar determinados arquivos.
+
+em .gitignore, se você não sabe as iniciais ou caracteres especiais
+de arquivos que não sabe, utilize *.i o "i" aqui só é para exemplo,
+pode representar a inicial de qualquer arquivo que você deseja excluir.
+
+git init -> inicializa um projeto.
+
+git status -> mostra o status de publicação e não publicação de seus
+arquivos.
+
+
+
