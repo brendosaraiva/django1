@@ -322,7 +322,7 @@ dos arquivos que vêm juntamente com o pacote django.
 
 <WSGIRequest: GET '/'> -> WSGI é o padrão de aplicações Python para a web.
 
-request -> Dá para ver no Django Shell, atividades de superusuários e demais
+  -> Dá para ver no Django Shell, atividades de superusuários e demais
 administradores da aplicação.
 
 
@@ -373,7 +373,6 @@ https://devcenter.heroku.com/articles/getting-started-with-python#set-up
 
 configuração para quem trabalha com python
 
-
 runtime.txt crie na raiz do projeto e coloque a versão do python dentro do
 arquivo. Python-3.11.1 -> Não se esqueça o traço.
 
@@ -386,4 +385,11 @@ web: gunicorn django1.wsgi --log-file -
 Isso servirá para executar o gunicorn, através do contato do projeto com wsgi, que no
 caso o projeto é o django1.
 
+heroku create django1-bs --buildpack heroku/python -> Cria uma aplicação com recursos do Python
 
+heroku logs -> mostrará os logs feitos incluindo os de erros.
+
+heroku é pago... :(
+
+Quando a aplicação for publicada, vá em setings.py e mude a string da variável
+ALLOWEDHOSTS para "www.seu-dominio.com" pois já está em produção (publicada).
