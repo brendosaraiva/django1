@@ -39,7 +39,7 @@ DEBUG = False
 
 # pública na heroku para ser gratuito, como é uma hospedagem gratuita, deixe *
 # mas caso seja publicado com domínio pago, substitua o "*" pelo seu domínio: www.dominio.com
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["django1-production-3e94.up.railway.app", "127.0.0.1", "localhost"]
 
 # Application definition
 
