@@ -43,6 +43,52 @@ pois ele é uma peça fundamental da aplicação django.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+BASE_DIR -> Acessa ao caminho do diretório do projeto Django.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+SECRET_KEY -> garante a segurança criptográfica interna do Django, sendo usada
+para assinar dados sensíveis como cookies, tokens e senhas. Ela não criptografa
+todo o sistema, mas é essencial para manter a integridade e autenticidade dos
+dados.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+ROOT_URLCONF -> recebe a configuração de rota de url raiz, no caso projeto.urls
+onde o arquivo urls faz a configuração das urls que serão usadas para acessar
+as páginas web.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+MIDDLEWARE ->  atua como um componente intermediário que processa requisições
+antes de chegarem às views e respostas antes de voltarem ao cliente. Ele pode
+modificar, bloquear ou monitorar o tráfego, adicionando funcionalidades como
+autenticação, segurança e logging.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+AUTH_PASSWORD_VALIDATORS -> Realiza configurações de validações prontas para
+senhas: tamanho, tipos e quantidade de caracteres e etc...
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+USE_I18N -> Oferece o sistema em múltiplos idiomas, de onde o usuário estiver
+acessando, ele pode traduzir a página para entender o conteúdo apresentado.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+USE_TZ -> Configura time zones.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+STATIC_URL -> Pega o diretório dos arquivos estáticos: html, javascript, css
+e imagens.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+WSGI -> é um arquivo exclusivo para publicação, deploy.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>
 > CRIANDO APLICAÇÃO DJANGO >
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -60,7 +106,8 @@ volvido através dele.
 
 pacote migration -> é um pacote de migração e atualização das aplicações do
 banco de dados, desde a criação a atualizações são armazenadas nele. Forma
-profissional de manter histórico de bancos de dados.
+profissional de manter histórico de bancos de dados. Sem contar que gera
+histórico de atividades no banco de dados.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -70,16 +117,33 @@ configuramos para receber as nossas aplicações feitas no Django.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+apps.py -> Possui uma configuração que persistirá na aplicação. Já vem
+configurada para atender os requisitos de configuração e criação de
+funcionalidades da aplicação.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+models.py -> Cria modelos de dados, classes, que serão persistidas no banco
+de dados ou até mesmo para utilizar no projeto.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+test.py -> Utilizado para criar teste da aplicação
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 views.py -> Tem funções que serão chamadas nas rotas para abrir os templates
 para visualização.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 arquivo settings.py
 
-INSTALLED_APPS = ["elementos"] -> Toda vez que criar uma nova aplicação
+INSTALLED_APPS = ["app"] -> Toda vez que criar uma nova aplicação
 dentro da pasta, você tem que colocar o nome da pasta dentro dessa lista.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+TEMPLATES -> Gerencia e configura os templates front-end via back-end.
 
 OBS: toda vez que baixar um template, passe o nome da pasta para a chave
 DIRS, se o modelo tiver um nome, acrescente-o nesta chave. Exemplo: uma
