@@ -178,6 +178,15 @@ OBS: DJANGO olha as alterações feitas em seus arquivos Django ou Python
 e atualiza.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+DEBUG = True -> Está referindo que a aplicação está no modo
+desenvolvimento.
+
+ALLOWED_HOSTS = [] -> Quando a lista tiver vazia, configure-a colocando
+asterisco "*" dentro de aspas, pois, estará informando que a aplicação
+não está em um servidor web, então permite que a aplicação possa ser
+acessada localmente no seu servidor remoto.
+
+
 ✅ O que DEBUG = False realmente faz:
 Esconde erros detalhados na tela:
 
@@ -216,16 +225,35 @@ visualizações das nossas aplicações.
 É nela que programamos para que o MVC do Django funcione.
 
 Uma view no django, nada mais é do que uma função,
-função que recebe uma variável (request) de requisição para
-acessar determinada página web.
+função que recebe um parâmetro (request) de requisição para acessar
+determinada página web. E essa função recebe dois parâmetros, request
+e uma página html.
 
-render -> renderiza uma página html, ou seja, carrega.
+render -> função que renderiza uma página html, ou seja, carrega.
+
+request -> Representa uma requisição ao acessar uma página web, por
+exemplo: www.seudominio.com
+
+"pagina.html" -> Representa suas páginas html criadas, onde a função
+render irá conectar com o domínio da aplicação e ao completar, acessará
+uma página específica para mostrar a requisição, por exemplo:
+www.seudominio.com/pagina.html
+
+OBS: para chegar na página html, ainda terá que passar por url.py
+(arquivo do projeto), importante que configure a rota corretamente
+para que a view possa mostrar corretamente os arquivos do template.
+
+OBS: as views só devem existir nas aplicações e não nos projetos, pois
+elas acessarão os arquivos dos templates.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >                              urls.py                              >
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-As rotas são de responsabilidade do arquivo urls.py
+As rotas são de responsabilidade do arquivo urls.py, para que seja
+possível visualizar os arquivos, será necessário importar do arquivo
+views.py (diretório da aplicação) as funções que acessam as páginas
+da aplicação.
 
 Server Error (500) -> Erro de tentar processar algo e não conseguir
 
@@ -235,8 +263,8 @@ from django.urls import path
 # importando views de index e contato para definir rotas
 from core.views import index, contato
 
-# path -> define as rotas de visualizações das páginas web. Recebe dois argumentos
-# posicionais, o nome da página e a view.
+# path -> define as rotas de visualizações das páginas web. Recebe dois
+# argumentos posicionais, o nome da página e a view.
 
 # "" -> quando passado o atributo com string vazia para path, significa que
 # está definindo uma view para a página inicial/raiz do sistema.
@@ -250,11 +278,12 @@ urlpatterns = [
     path("contato", contato)
 ]
 
-OBS: essa acima não é a ideal de se fazer no projeto django.
-O ideal é que seja criado um arquivo urls.py na aplicação core
-e toda rota que fizermos das páginas web sejam definidas na nova,
-pois a rota padrão pode-se ser utilizada para rotas administrativas
-do projeto.
+OBS: fazer várias rotas de views da aplicação num projeto django não é
+o ideal. O ideal é que seja criado um arquivo urls.py na aplicação e toda
+rota que fizermos das páginas web, sejam definidas no diretório da aplicação,
+pois, a rota padrão pode ser utilizada para rotas administrativas do projeto,
+por exemplo, o projeto ficar responsável somente por acessar as rotas que
+levam as aplicações.
 
 -------------------
 | django1/urls.py |
@@ -266,6 +295,11 @@ from django.urls import path, include
 # path("", include("core.urls")) -> Toda requisição feita para
 # raiz é enviada (include) para aplicação core, que tem o arquivo
 # urls que irá receber essas requisições.
+
+# "" -> Represeta a raiz do projeto
+
+# include() -> inclui o caminho de um diretório específico que esteja na
+raiz do projeto
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -289,6 +323,28 @@ OBS: o ideal de se fazer isso é para evitar um monte de rotas na url
 padrão, nela colocamos a rota GERAL das aplicações. E cada aplicação
 que for criada para o projeto é ideal que tenha sua própria url.
 
+OBS-2: como só o projeto que vêm com as rotas que acessam as views,
+sempre crie uma segunda rota na aplicação, pois é ideal que deixe as
+rotas de urls do projeto a cargo de gerenciar o acesso as aplicações,
+enquanto as aplicações sejam responsáveis por gerenciar os acessos as
+views. Exemplo:
+
+-----projeto---------
+|-------app1--------|
+|--------|---pag1---|
+|--------|---pag2---|
+|-------app2--------|
+|--------|---pag1---|
+|--------|---pag2---|
+|-------app3--------|
+|--------|---pag1---|
+|--------|---pag2---|
+---------------------
+
+urls.py do Projeto -> gerencia as rotas que levam as aplicações.
+
+urls.py das aplicações -> gerencia as rotas que levam as páginas do app.
+
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >                            Templates                              >
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -301,29 +357,67 @@ Arquivo utilizado para persistir os dados que são recebidos com as
 interações de sua aplicação com o banco de dados. Local onde é feito
 o mapeamento.
 
-Verifique se o pacote referente a aplicação está dentro de settings
+1º Passo: do módulo models (modelos), importe Classes para criar
+classes filhas que herdem características e comportamentos. Os objetos
+ficarão instanciados dentro da classe herdada, dentro das classes filhas
+é obrigatório conter objetos que irão receber atributos para definir
+suas características. Isso servirá para criar as tabelas dos banco de
+dados contendo os atributos de cada tabela. O método de classes é algo
+relacionado a criação de bancos de dados relacionais, que visam o método
+de criação Modelagem Orientada a Objetos (ORM).
+
+Os tipos de dados dos atributos de models são: CharField, IntergerField,
+EmailField e etc, exemplo:
+
+class Model(models.Model):
+    objeto = models.CharField("atributo", max_length=100))
+
+    def __str__(self):
+        return self.nome
+
+2º Passo: verifique se o pacote (no caso core) referente a aplicação está
+dentro de settings.
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
+    "django.contrib.admin",  # interface administrativa do projeto Django.
+    "django.contrib.auth",  # aplicação de autenticação de usuários no sistema.
+    "django.contrib.contenttypes",  # aplicação que gerencia a apresentação de diferentes conteúdos.
+    "django.contrib.sessions",  # aplicação de gerenciamento de sessões de usuários autenticados.
+    "django.contrib.messages",  # aplicação de gerenciamento de troca de mensagens entre as aplicações.
+    "django.contrib.staticfiles",  # aplicação de gerenciamento de uso e apresentação de arquivos estáticos.
     "core",
 ]
 
-Pois se não os testes de models.py não irão funcionar!
+OBS: ao cria o banco de dados, é necessário que execute os comandos abaixo,
+pois, admin, auth, contenttypes e sessions, necessitam que seja aplicada a
+criação do banco de dados com as tabelas e com isso possam gerenciar os dados
+que serão submetidos no banco de dados da aplicação.
+
+Pois, se não os testes de models.py não irão funcionar!
 
 
-1º Passo - python manage.py makemigrations:
+3º Passo - python manage.py makemigrations: Esse comando gera arquivos de
+migração — basicamente um "rastro" das alterações que você fez nos seus
+modelos. Ele cria scripts que descrevem como criar ou alterar tabelas,
+colunas, índices, etc.
 
 Este comando verifica se houve alterações nos modelos definidos em models.py.
 Se houver alterações, ele cria arquivos de migração na pasta migrations, mas
 não "pega" todos os arquivos da aplicação. Ele apenas captura as mudanças
 nos modelos.
 
-2º Passo - python manage.py migrate:
+Esses apps são instalados por padrão no Django e têm seus próprios modelos
+que precisam de tabelas no banco. Quando você roda o migrate pela primeira
+vez, o Django cria as tabelas para eles também.
+
+Ou seja, mesmo que você não tenha criado nenhum model seu ainda, se você não
+rodar o migrate, essas tabelas essenciais não existirão — e coisas como o
+painel de administração (admin), autenticação de usuários (auth), sessões e
+tipos de conteúdo (contenttypes) não funcionarão.
+
+4º Passo - python manage.py migrate: Aplica essas migrações no banco de dados
+— ou seja, executa as mudanças reais, criando ou modificando tabelas conforme
+necessário.
 
 Este comando aplica as migrações que foram criadas anteriormente. Ele atualiza
 o banco de dados de acordo com as definições dos modelos.
@@ -357,23 +451,97 @@ adaptar a estrutura do banco.
 >                              admin                                >
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-python manage.py createsuperuser -> Cria um Superusuário e senha para
-adiministrar a aplicação web. Primeiro usuário criado para administrar
-o sistema
+python manage.py createsuperuser -> primeiro usuário a ser criado para
+poder gerenciar o sistema.
 
-As configurações do modelo são feitas em admin no core, nele importamos
-os nossos modelos e registrá-los na administração.
+Depois de feitas as configurações, há a necessidade de registrar os modelos
+dos dados criados em models.py, na interface para fazer o gerenciamento das
+tabelas do banco de dados.
+As configurações do modelo são feitas em admin, nele importamos os nossos
+modelos e podemos registrar dados nas tabelas via painel administrativo.
+Exemplo:
+
+from .models import Cliente, Produto
+
+Depois de importar, para registrar os modelos e seus atributos no painel
+administrativo, basta realizar o comando abaixo.
+
+class ProdutoAdmin(admin.ModelAdmin):
+    list_display = ("nome", "preco", "estoque")
+
+admin.site.register(Cliente, ClienteAdmin)
+admin.site.register(Produto, ProdutoAdmin)
+
+OBS-1: register(Model1, ModelAdmin1) -> função que recebe como parâmetro
+duas classes, a primeira é referente aos modelos do banco de dados. A
+segunda serve para mapear os atributos do modelo e administrar seus dados
+ou até mesmo apresentar a visualização dos dados via painel administrativo
+do django.
+
+OBS-2: ClienteAdmin e ProdutoAdmin são classes que fazem referência à
+Cliente e Produto, ambas servem para mostrar os dados de seus atributos.
+A visualização dos dados por coluna só é possível via função list_display.
+
+OBS-3: quando acessar o painel administrativo do django, irá ver que, além
+de adicionar os modelos ao painel, ele criará uma sessão dedicada a
+aplicação que será gerenciada (core) com os models registrados dentro.
+Ou seja, ao registrar as tabelas, o rótulo da aplicação a qual elas
+pertencem, vão também referir-se que são tabelas que só são administradas
+pela aplicação core.
 
 Por segurança, na rota urls do pacote django1, renomeie a rota de admin
 para outro nome, pois isso é extremamente útil para defender e proteger
 o seu sistema de possíveis ataques web na área administrativa. Renomeie
-para outro nome.
+para outro nome. Ele automaticamente troca o nome dentro dos arquivos
+responsáveis pela rosta administrativa para o nome da rota definida por
+você.
+
+Antes:
+
+urlpatterns = [
+    path("admin/", admin.site.urls),  # troque admin por outro nome
+    path("", include("core.urls")),
+]
+
+Depois:
+
+urlpatterns = [
+    path("painel/", admin.site.urls),
+    path("", include("core.urls")),
+]
+
+OBS: em views, para apresentar dados do banco de dados ou para imprimir
+informações na interface frontend, será necessário passar uma dicionário
+chamada context, onde receberá chave e valor, pois com ela será possível
+apresentar os dados no front, valor receberá os dados da tabela do modelo
+definida em models.py ou a informação a ser impressa via print no python.
+context será redenrizado na página html escolhida, e para apresentar os
+dados é só passar as chaves contidas em context para mostrar as informações.
+Por exemplo: {{ chave }}, é auto acessível, já que é renderizada na sua
+própria view responsável.
+
+Caso venha apresentar algum dado de um modelo específico, será necessário
+importá-lo no arquivo de views, além de passar para sua chave criada de
+acesso aos dados.
+
+from .models import Produto
+
+Exemplo de implementação no arquivo views:
+
+def index(request):
+    produtos = Produto.objects.all()
+
+    context = {
+        "curso": "Programação Web com Django Framework",
+        "outro": "Django é massa!",
+        "produtos": produtos
+    }
+    return render(request, "index.html", context)
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >                        Django Shell                               >
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 
 python manage.py help -> Mostra os comandos de execução que são utilizados
 pelo arquivo manage.py e além de ter uma documentação via comando help
@@ -382,18 +550,447 @@ opções, exemplo:
 
 python manage.py shell -> comando para abrir terminal, é ótimo para
 testar os comandos e conhecer mais dos comandos de cada função ou método
-dos arquivos que vêm juntamente com o pacote django.
+dos arquivos que vêm juntamente com o pacote django. É ótimo para testar
+métodos de objetos do banco de dados. Após executar o comando, irá abrir
+um console python (nada mais é que um terminal dedicado a testes) faça o
+seguinte exemplo abaixo no seu código:
+
+from core.models import Produto
+
+Dá de acrescentar dados via shell, exemplo:
+
+produto = Produto(nome="Atari 600", preco=199.85, estoque=200)
+
+dir(produto) -> Ao executar esse comando, mostrará uma série de atributos
+e métodos que o objeto herda dos modelos Mapeamento-Relacional de Objetos
+que vêm por padrão no Django. Isso é útil na hora de tratar ou simplesmente
+apresentar os dados do Banco de Dados em diferentes formas nas views
+
+OBS: os argumentos são passados nomeados, porque não temos um método
+inicializador/construtor da classe, uma vez que não tem, é necessário atribuir
+os dados via nomeação para que seja possível acessar os atributos contidos
+no modelo e guardar os dados recebidos.
+
+OBS: uma vez criado um objeto (que será um registro na tabela referente a
+Produto) será necessário salvar a informação no banco de dados, pois caso venha
+sair do Django shell, a informação não será salva.
+
+produto.save() -> Método save() é um método do Django que tem como objetivo de
+salvar os dados do objeto no banco de dados.
+
+Como sei que os dados foram realmente salvos no banco de dados?
+
+produto.id -> Irá retornar a chave do último registro adicionado na tabela do
+banco de dados (pk também funciona, é a mesma coisa que id).
+
+Caso queira ter a certeza que realmente foi salvo, execute o comando abaixo:
+
+produto.objects.all() -> irá mostrar todos os objetos que foram armazenados na
+tabela do banco de dados.
+
+Mas tem uma maneira mais fácil, pois, quando você cria o objeto, só basta
+imprimi-lo para visualizar seu nome (tem um porém, vai depender se o método
+__str__(f"{self.nome}") existir na classe).
+
+Alterando dados de um objeto: basta passar informar o objeto e chamar o seu
+atributo e atribuir um novo valor, exemplo:
+
+produto.nome = "Nintendo"
+produto.save()
+
+OBS: isso funciona para todos os atributos do modelo.
+
+Excluindo objeto: basta passar o objeto e chamar o método delete():
+
+produto.delete()
+{5: {'core.Produto': 5}} -> Mostra o objeto deletado no shell.
+
+OBS: O shell não se limita a apresentação e testes de apresentação de dados
+somente referentes a models ou impressões de informações executando as
+função built-ins do python (print). Você pode testar como fazer bem o uso
+dos recursos das views. Ainda no django shell, importe as views e execute:
+
+from core.views import index
+
+dir(index) -> irá apresentar alguns comandos que dá de se fazer, com a view
+index
+
+Ao rodar o servidor remoto, se colocar um print para ver o conteúdo de
+request dentro de alguma view, é possível visualizar vial terminal o seguinte
+resultado:
 
 <WSGIRequest: GET '/'> -> WSGI é o padrão de aplicações Python para a web.
 
-  -> Dá para ver no Django Shell, atividades de superusuários e demais
-administradores da aplicação.
+GET -> Verbo http que informa uma requisição de visualização, que no caso
+aponta para raiz.
 
+'/' -> raiz que representa a rota da página principal que é a inicial do
+projeto django.
+
+print(dir(request)) -> Mostra uma série de atributos que existem e que podem
+ser utilizados com request.
+
+print(dir(request.user)) -> Mostra uma série de atributos que são referentes
+aos dados do usuário logado no sistema.
+
+python manage.py shell -> Dá para ver no Django Shell, atividades de
+superusuários e demais administradores da aplicação.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                 Apresentando dados no Templates                   >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Para levar os dados do banco de dados e apresentar nos templates, é necessário
+fazer chamada de alguns métodos dos modelos (além de importá-los) nas views.
+Uma vez acessando os atributos dos objetos é possível ver os dados de cada
+atributo dos objetos. Cada objeto no modelo ORM, possuem uma série de
+comportamentos que poderão se úteis ao apresentar dados de maneiras distintas
+nas páginas gerenciadas pelo arquivo de views. Exemplo no shell:
+
+from core.models import Produto
+
+print(dir(Produtos.objects)) -> mostra uma série de métodos que podem ser
+aplicados nos objetos salvos na tabela do banco de dados.
+
+produtos = Produtos.objects.all() -> Recebe uma lista de QuerySet contendo
+todos os objetos
+
+OBS: á para interar sobre a lista
+
+for produto in produtos:
+    print(produto) # Devolve o nome do atributo de cada objeto armazenado no BD.
+
+Produto.objects.count() -> Mostra a quantidade de produtos armazenados.
+
+Produto.objects.first() -> Mostra o primeiro produto cadastrado.
+
+Produto.objects.last() -> Mostra o último produto cadastrado.
+
+Produto.objects.filter(id=1) -> Filtra o elemento cadastrado pelo parâmetro
+nomeado id.
+
+(OBS: você pode utilizar o Django Shell para fazer a chamada de alguns recursos
+dos modelos via prompt, para ter certeza que determinado método funcionam).
+
+Enviar dados para views e apresentar os dados no template.
+
+1º - Passo: deve-se importar o modelo para o arquivo views, para que seja
+possível manipular os objetos do modelo no template.
+
+from .models import Produto
+
+2º - Passo: deve-se criar uma variável na função responsável pela view
+específica, para que seja possível manipular os dados do modelo no template.
+
+OBS: no exemplo abaixo, os objetos serão apresentados no arquivo index.html
+do template.
+
+def index(request):
+    produtos = Produto.objects.all()  # A variável irá receber todos os objetos
+                                      # do modelo que serão manipulados.
+    context = {
+        "curso": "Programação Web com Django Framework",
+        "outro": "Django é massa!",
+        "produtos": produtos # chave responsável pela lista de objetos.
+    }
+    return render(request, "index.html", context)
+
+Apresentando os dados no template
+
+1º - Passo: abra o arquivo que a view index é responsável, inclua a estrutura de
+repetição abaixo para que seja possível apresentar os dados do objeto.
+
+OBS-1: para interar sobre listas que estão sendo puxadas do backend, sempre
+coloque o laço de repetição entre {% estrutura de repetição %}
+OBS-2: para apresentar os dados contidos ou impressões de variáveis, coloque-as
+dentro de duplas chaves {{ variável }}.
+OBS-3: como é um comando oriundo de um arquivo dinâmico, sempre finalize com
+{% endfor %} (se for um laço de repetição for) para dizer para o html que a
+execução do bloco acabou.
+
+OBS adicional: O Django possui um motor de templates (Django Template Language)
+que interpreta os marcadores {{ }} e {% %} para misturar código dinâmico com
+HTML estático antes de enviar o resultado ao navegador.
+
+{% for produto in produtos %}
+    <p>{{ produto }}</p>
+{% endfor %}
+
+Se quiser no formato de tabela, siga as instruções abaixo:
+    <table> <!-- Abertura para criação de tabela -->
+        <thead> <!-- Campos da tabelas -->
+            <tr> <!-- <tr></tr> -> table reader, lê as informações da tabela por
+            linha -->
+                <th>Produto</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody>  <!-- <tbody></>tbody> ->é o corpo da tabela, vai os dados. -->
+            {% for produto in produtos %}
+            <tr>
+                <!-- <td></td> é o dado que vai em cada célula por linha -->
+                <td><a href="{% url 'produto' produto.id %}">{{produto.nome}}</a></td>
+                <td>{{produto.preco}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> <!-- Fechamento de criação da tabela -->
+
+<a href="{% url 'produto' produto.id %}"></a> -> Link para acessar uma página
+com detalhes específicos de um modelo. Para que seja possível, é necessário
+criar uma outra view para que seja possível apontar para o redirecionamento à
+página de produto, além da página estática que irá mostrar a ficha mais
+detalhada sobre o produto clicado. Exemplo:
+
+OBS-1: 'produto' -> faz acesso a view da página de produto.
+
+def produto(request, pk):
+    # prod = Produto.objects.get(id=pk)  # get(id=pk) -> filtra dados por id
+    prod = get_object_or_404(Produto, id=pk)
+    context = {
+        "produto": prod
+    }
+    return render(request, "produto.html", context)
+
+
+Com isso, o link âncora será possível acessar a rota da página de produto por
+meio do id e ver os detalhes dele.
+
+Depois de adicionada a view, é necessário adicioná-la a lista de urlpatterns
+do arquivo de urls da aplicação, que, é responsável pelas rotas até os
+templates, para poder ser possível acessar o template responsável de mostrar as
+informações do produto via id. Insira em uma nova linha da lista:
+
+1º - Importe a view em urls.py
+from .views import index, contato, produto
+
+2º - Insira o caminho da view para url poder criar uma rota (link) onde está o
+template.
+path("produto/<int:pk>", produto, name="produto"),
+
+produto/<int:pk> -> rota para produto via id (sem espaço entre int e pk).
+<int:pk> -> significa que vai receber um id do tipo int, que é a visualização
+de um item específico do objeto do banco de dados.
+produto -> envia para o indice (view) produto.
+name="" -> recebe o nome da rota (não da view). Exemplo: produto
+
+Exemplo de como ficaria ao acessar determinado produto:
+www.meusite.com/produto/1
+
+OBS: as views determinam quais templates serão usados, enquanto as rotas/URLs
+conectam essas views a caminhos específicos da aplicação e dão nomes para
+referência.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>                       Arquivos Estáticos                          >
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Para acessar os arquivos estáticos do Django, é necessário, que crie
+uma pasta dedicada, onde ficarão armazenados os arquivos. Dentro desta,
+deve haver subpastas para cada tipo, de arquivo estático (CSS, images,
+javascript), pois fica bangunçado misturá-los. Exemplo:
+
+/static/
+    |
+    |
+    ------/css/
+    |         |
+    |         ------/estilos.css/
+    |
+    ------/images/
+    |         |
+    |         ------/imagem.png/
+    |         |
+    |         ------/logotipo.png/
+    |
+    ------/javascript/
+              |
+              ------/script.js/
+
+
+OBS: toda vez que for desenvolver uma aplicação, configure uma outra
+constante para receber o caminho dos arquivos estáticos. Pois assim
+que o projeto for para produção, será mixado os arquivos estáticos
+das suas aplicações com os arquivos estáticos das aplicações do Django
+que são padrão da framework. O Django coleta todos os arquivos das
+aplicações e os centraliza (você pode ter n aplicações, ele pega o
+arquivos de todas e as coloca dentro de staticfiles).
+
+OBS: staticfiles só será gerado quando for enviado para publicação o
+projeto, e por intermédio de um código padrão do Django que servirá
+para criá-lo.
+
+STATIC_URL = "static/"  # Usado durante o desenvolvimento da aplicação
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles") # Usado durante a
+produção, junta o caminho com a pasta desejada. BASE_DIR é a raiz do
+nosso projeto.
+
+O Django sempre usa STATIC_URL como caminho nos templates, tanto em
+desenvolvimento quanto em produção. A diferença é que, em produção,
+você deve rodar o comando collectstatic para copiar todos os arquivos
+para a pasta configurada em STATIC_ROOT, e então configurar o servidor
+web (como Nginx ou Apache) para servir esses arquivos no endereço definido
+por STATIC_URL.
+
+A variável DEBUG é apenas um indicativo de ambiente e não faz o Django
+"trocar" entre STATIC_URL e STATIC_ROOT automaticamente — o que muda é a
+forma como os arquivos são servidos.
+
+Carregando arquivos estáticos nos templates:
+
+1º Passo:
+Toda vez que for usar arquivos estáticos em algum template das aplicações
+criadas, você deve carregá-los no início, antes da tag !DOCTYPE. Pois
+estará informando ao template que deve carregar arquivos estáticos.
+
+Para informar, basta passar {% load static %} informa que está carregando
+os arquivos estáticos.
+
+2º Passo:
+Deve informar onde o arquivo estático está, por exemplo, se for um arquivo
+css, faça isso:
+
+<!-- puxa o arquivo de estilos da pasta static -->
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+OBS: essa pasta será carregada lá no arquivo de settings por meio do motor
+{% load static %} e dependendo do modo em que se encontra o projeto (em
+desenvolvimento ou publicado), irá carregar os arquivos estáticos contidos
+dentro dela e substituir static (contido no link âncora) pela pasta onde
+estão os arquivos.
+
+href="{% static 'css/estilos.css' %} -> link âncora, que pega o caminho onde
+um arquivo estático (no exemplo o css) está.
+
+Carregando imagens estáticas no template:
+
+<img src="{% static 'images/django.png' %}"/>
+
+{% static 'images/django.png' %} -> url que acessa o diretório static e o
+subdiretório images e o navegador carrega a imagem a ser mostrada no
+template.
+
+Carregando comportamentos para o template (ações com JavaScript):
+
+<script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+
+type="text/javascript" -> informa que é ddo tipo javascript o arquivo
+carregado.
+
+src="{% static 'js/script.js' %} -> url que acessa o diretório static e o
+subdiretório js e o navegador carrega o javascript, que será responsável
+por executar os comportamentos/ações de: botões, labels e animações no
+arquivo html.
+
+Terminado o desenvolvimento e enviando arquivos estáticos para produção
+
+No terminal execute:
+python manage.py collectstatic -> Irá coletar todos os arquivos estáticos
+das aplicações do projeto, e irá colocá-los em um novo diretório chamado
+staticfiles (que é criado automaticamente). O resultado da criação, no
+terminal aparecerá a seguinte mensagem:
+
+OBS: python manage.py runserver -> por padrão, não consegue servir arquivos
+estáticos quando está em produção. Isso porque enquanto está no modo
+desenvolvimento, não precisa se preocupar com performace e segurança, só
+devemos nos preocupar com isso, quando o projeto for publicado.
+
+122 static files copied to 'C:\Users\Brend\Documents\Brendo\CURSOS\Python\Django\django1\staticfiles'
+
+OBS: O servidor de desenvolvimento do Django (runserver) não serve arquivos
+estáticos de forma adequada em produção. Para que os arquivos fiquem
+realmente acessíveis quando o projeto for publicado, será necessário
+configurar um servidor web dedicado, como Nginx ou Apache, ou utilizar
+outra solução de armazenamento de arquivos estáticos.
+
+Segurança:
+
+Caso usuários mal intecionados tentem acessar páginas que não existem para
+forçar um erro no servidor e encontrar falhas de segurança no seu projeto,
+será necessário fazer o import da bilioteca shortcuts do Django, para fazer
+uso das função get_object_or_404 que é responsável por, validar se o acesso
+a uma página realmente existe, se caso não existir será redirecionado para
+uma página de erro 404.
+
+get_object_or_404(Modelo, id=pk) -> Caso o usuário acesse uma página que
+existe, recebe a página desejada. Caso a página seja errada, redirecionará
+o usuário para uma página de erro.
+
+# Apresenta erro de página não encontrada
+from django.shortcuts import get_object_or_404
+
+Em urls.py do projeto, é necessário fazer o import de funcionalidades do
+Django, referentes a erros de página.
+
+from django.conf.urls import handler404, handler500  # Gerencia a página de
+errors
+
+Caso o usuário ou alguém mal intecionado erre ao fazer requisição da página,
+na rota url será necessário fazer o uso do handler 404 (se caso o usuário
+não tenha permissão para acessar determinado conteúdo do sistema, similar-
+mente acontecerá o mesmo com o erro 500), que mandará a requisição das
+views acessar os arquivos de erro 404 (ou 500, se for referente a erro
+no servidor).
+
+handler404 = views.error404 # Acessa do arquivo views e abre a rota para
+visualizar o erro 404 referente a página não encontrada.
+
+handler500 = views.error500 # Acessa do arquivo views e abre a rota para
+visualizar o erro 500 referente a erro no servidor.
+
+OBS: se get_object_or_404 receber uma requisição para ver um objeto ao
+qual o usuário não tem permissão de acesso, o correto é levantar a exceção
+PermissionDenied (erro 403), que em produção acionará o handler403 e
+exibirá o template 403.html.
+O erro 500 (Http500) é usado apenas para falhas internas do servidor.
+
+OBS: as páginas personalizadas de 404, 500 e 403 só aparecem se
+DEBUG = False no settings.py (modo de produção). No modo de
+desenvolvimento, o Django mostra páginas de depuração.
+
+Em view, import a classe HttpResponse que trabalha com formato de páginas
+de erros que são específicas do Django e dar uma resposta com base na
+requisição.
+
+from django.http import HttpResponse
+
+Para pegar facilmente a página de erro, existe uma função loader que
+carrega uma série de funcionalidades relacionadas aos templates. Uma delas
+é a get_template('404.html') que pega o template.
+
+from django.template import loader
+
+Nas views de error (400 e 500), acrescente o código abaixo e coloque como
+argumento de get_template a página html referente ao erro. Exemplo:
+
+template = loader.get_template("404.html")
+return HttpResponse(content=template.render(), content_type='text/html; charset=utf-8', status=404)
+
+HttpResponse -> Classe que devolve uma resposta predefinida relacionada a
+uma requisição feita pelo usuário
+
+content -> parâmetro que recebe um template a ser renderizado.
+
+content_type -> recebe uma requisição de redirecionamento de conteúdo com
+base na escrita do formato de uma determinada região.
+
+status -> O tipo do status de requisição destinada ao usuário
+
+Redirecionando o usuário deslogado do admin (ou outros) para a página
+incial - index
+
+Acesse settings e acrescente no final variável LOGOUT_REDIRECT_URL, pois
+essa variável será lida por último no arquivo de settings, com isso irá
+redirecionar os usuários administrativos, caso venham deslogar no sistema
+para url index (responsável pela view de index).
+
+LOGOUT_REDIRECT_URL = "index"  # Redireiciona para página index
+
+OBS: o LOGOUT_REDIRECT_URL pode redirecionar para qualquer url configurada.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 >                          Publicando                               >
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 
 pip install whitenoise gunicorn
 

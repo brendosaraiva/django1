@@ -29,7 +29,7 @@ from core import views
 # urls que irá receber essas requisições.
 
 urlpatterns = [
-    path("acesso/", admin.site.urls),
+    path("painel/", admin.site.urls),
     path("", include("core.urls")),
 ]
 
